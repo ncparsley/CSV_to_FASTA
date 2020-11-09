@@ -1,0 +1,60 @@
+import os
+import sys
+
+input_file_name = sys.argv[1] #argv = vector of arguments
+output_file_name = sys.argv[2]
+sequence_name = None
+fp = open(input_file_name, "r") #r = reading (mode you are opening, w = write, a = append)
+fp_output = open(output_file_name, "w")
+
+
+class Entry:
+    def __init__(self):
+        self.parameters = {}
+        self.sequence = ""
+    def formatparameters (self):
+        parameters = []
+        output = ">"
+        for key,value in self.parameters.items():
+            parameters.append (key + "=" + value)
+        output += ",".join (parameters)
+        return output
+    
+
+entrylist = []
+
+headers = None
+
+for line in fp:
+    if headers is None:
+        headers = line.strip ().split(",")
+        sequence_index = headers.index ("sequence")
+    else:
+        fields = line.strip ().split (",")
+        entry = Entry ()
+        for index, field in enumerate (fields):
+            if index == sequence_index:
+                entry.sequence = field
+            else:
+                entry.parameters [headers[index]] = field
+        entrylist.append(entry)        
+
+for entry in entrylist:
+    fp_output.write(entry.formatparameters() + "\n" + entry.sequence + "\n")
+
+fp_output.close ()
+fp.close ()
+
+
+
+
+
+
+
+
+
+
+    
+
+
+                
